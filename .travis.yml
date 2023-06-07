@@ -1,0 +1,11 @@
+language: node_js
+dist: focal
+services: docker
+node_js:
+  - 16
+before_install: 
+ - chmod +x ./scripts/*.sh
+install: 
+ - ./scripts/install.sh
+script: ./scripts/package.sh
+after_success: travis_wait ./scripts/deploy.sh
