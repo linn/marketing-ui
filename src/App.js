@@ -1,34 +1,32 @@
-import * as React from 'react';
-import './App.css';
-import useData from './hooks/useData';
-import Grid from '@mui/material/Grid';
-import CircularProgress from '@mui/material/CircularProgress';
-import Typography from '@mui/material/Typography';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
+import * as React from "react";
+import "./App.css";
+import useData from "./hooks/useData";
+import Grid from "@mui/material/Grid";
+import CircularProgress from "@mui/material/CircularProgress";
+import Typography from "@mui/material/Typography";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Paper from "@mui/material/Paper";
 
 function App() {
-  console.log('env is ' + process.env.NODE_ENV);
-
   const appRoot =
-    process.env.NODE_ENV === 'production'
-      ? 'app.linn.co.uk'
-      : 'app-sys.linn.co.uk';
+    process.env.NODE_ENV === "production"
+      ? "app.linn.co.uk"
+      : "app-sys.linn.co.uk";
 
   const { data, loading } = useData(
-    'https://' + appRoot + '/users/promotions/lp12-50'
+    `https://${appRoot}/users/promotions/lp12-50`
   );
 
-  const [country, setCountry] = React.useState('');
+  const [country, setCountry] = React.useState("");
 
   const handleChange = (event) => {
     setCountry(event.target.value);
@@ -93,9 +91,7 @@ function App() {
                             <a
                               target="_blank"
                               rel="noopener noreferrer"
-                              href={
-                                "http://" + appRoot + "/users/" + row.UserId
-                              }
+                              href={`http://"${appRoot}/users/${row.UserId}`}
                             >
                               {row.UserId}
                             </a>
