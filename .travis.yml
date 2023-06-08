@@ -8,4 +8,4 @@ before_install:
 install: 
  - ./scripts/install.sh
 script: ./scripts/package.sh
-after_success: travis_wait ./scripts/deploy.sh
+after_script: travis_wait ./scripts/deploy.sh
