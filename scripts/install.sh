@@ -1,5 +1,5 @@
 #!/bin/bash
 set -ev
 
-npm ci 
+npm install 
 npm run build
