@@ -7,5 +7,6 @@ before_install:
  - chmod +x ./scripts/*.sh
 install: 
  - ./scripts/install.sh
-script: ./scripts/package.sh
-after_script: travis_wait ./scripts/deploy.sh
+script: 
+ - ./scripts/package.sh
+ - travis_wait ./scripts/deploy.sh
