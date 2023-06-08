@@ -80,7 +80,7 @@ Resources:
         Image: !Sub docker.io/linn/marketing-ui:${dockerTag}
         PortMappings:
         - ContainerPort: 5050
-        Memory: '300'
+        Memory: '150'
         LogConfiguration:
           LogDriver: gelf
           Options:
