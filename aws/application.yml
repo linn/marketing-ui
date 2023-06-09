@@ -89,18 +89,8 @@ Resources:
         Environment:
         - Name: APP_ROOT
           Value: !Ref appRoot
-        - Name: PROXY_ROOT
-          Value: !Ref proxyRoot
-        - Name: AUTHORITY_URI
-          Value: !Ref authorityUri
         - Name: LOG_AMAZON_SQSQUEUEURI
           Value: !ImportValue logging-queue-url
-        - Name: LOG_ENVIRONMENT
-          Value: !Ref loggingEnvironment
-        - Name: LOG_MAX_INNER_EXCEPTION_DEPTH
-          Value: !Ref loggingMaxInnerExceptionDepth
-        - Name: SMTP_HOSTNAME
-          Value: !Ref smtpHostname
         - Name: KEYS_BUCKET_NAME
           Value:
             Fn::ImportValue:
