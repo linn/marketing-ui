@@ -74,7 +74,7 @@ Resources:
     Properties:
       TaskRoleArn: !GetAtt marketingUiRole.Arn
       ContainerDefinitions:
-      - Name: marketingUi
+      - Name: marketing-ui
         Cpu: '1'
         Essential: 'true'
         Image: !Sub docker.io/linn/marketing-ui:${dockerTag}
