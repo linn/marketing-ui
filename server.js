@@ -4,8 +4,10 @@ const app = express();
 
 app.use(express.static(path.join(__dirname, 'build')));
 
-app.get('/', function (_, res) {
+app.get('/marketing-ui', function (_, res) {
   res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
+
+app.get('/healthcheck', (_, res) => res.sendStatus(200));
 
 app.listen(5050);

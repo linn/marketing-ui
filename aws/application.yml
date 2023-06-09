@@ -1,0 +1,123 @@
+Description: Marketing-ui
+AWSTemplateFormatVersion: '2010-09-09'
+Parameters:
+  dockerTag:
+    Type: String
+    Description: Docker tag to deploy
+  appRoot:
+    Type: String
+    Description: app root
+  environmentSuffix:
+    Type: String
+    AllowedValues:
+      - ''
+      - -sys
+    Description: Environment suffix e.g -sys
+  TestClusterName:
+    Type: AWS::SSM::Parameter::Value<String>
+    Description: Name of test cluster
+    Default: TestClusterName
+  ProductionClusterName:
+    Type: AWS::SSM::Parameter::Value<String>
+    Description: Name of production cluster
+    Default: ProductionClusterName
+
+Conditions:
+  isTesting: !Equals [!Ref environmentSuffix, "-sys"]
+
+Resources:
+  marketingUiRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              Service: [ "ecs-tasks.amazonaws.com" ]
+            Action: [ "sts:AssumeRole" ]
+      Path: "/"
+      Policies:
+      - PolicyName: marketingUiServices
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action:
+            - sqs:SendMessage
+            Resource:
+              Fn::ImportValue: logging-queue-arn
+          # - Effect: Allow
+          #   Action:
+          #   - ses:SendEmail
+          #   - ses:SendRawEmail
+          #   Resource: '*'
+      - PolicyName: kms
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action:
+              - 'kms:Encrypt'
+              - 'kms:Decrypt'
+            Resource: "*"
+      - PolicyName: s3Policy
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action:
+              - s3:*
+            Resource: !Sub "arn:aws:s3:::auth${environmentSuffix}*-keysbucket*"
+  marketingUiTaskDefinition:
+    Type: AWS::ECS::TaskDefinition
+    Properties:
+      TaskRoleArn: !GetAtt marketingUiRole.Arn
+      ContainerDefinitions:
+      - Name: marketing-ui
+        Cpu: '1'
+        Essential: 'true'
+        Image: !Sub docker.io/linn/marketing-ui:${dockerTag}
+        PortMappings:
+        - ContainerPort: 5050
+        Memory: '150'
+        LogConfiguration:
+          LogDriver: gelf
+          Options:
+            'gelf-address': 'udp://syslog.linn.co.uk:12201'
+            'tag': !Sub marketing-ui-${dockerTag}-ecs-task
+        Environment:
+        - Name: APP_ROOT
+          Value: !Ref appRoot
+        - Name: LOG_AMAZON_SQSQUEUEURI
+          Value: !ImportValue logging-queue-url
+        - Name: KEYS_BUCKET_NAME
+          Value:
+            Fn::ImportValue:
+              !Sub "linn-keys-bucket${environmentSuffix}"
+        - Name: KMS_KEY_ALIAS
+          Value:
+            Fn::ImportValue:
+              !Sub "kms-key-alias${environmentSuffix}"
+  marketingUiService:
+    Type: AWS::ECS::Service
+    Properties:
+      # Have to use long form conditional
+      Cluster: !If
+        - isTesting
+        - !Sub ${TestClusterName}
+        - !Sub ${ProductionClusterName}
+      DesiredCount: !If [ isTesting, 1, 2]
+      PlacementStrategies:
+        - Field: attribute:ecs.availability-zone
+          Type: spread
+        - Field: instanceId
+          Type: spread
+      TaskDefinition: !Ref marketingUiTaskDefinition
+      Role: ecsServiceRole
+      LoadBalancers:
+      - ContainerName: marketing-ui
+        ContainerPort: 5050
+        TargetGroupArn:
+          Fn::ImportValue:
+            !Sub "marketing-ui-target-group-arn${environmentSuffix}"
