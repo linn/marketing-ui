@@ -91,7 +91,7 @@ function App() {
                             <a
                               target="_blank"
                               rel="noopener noreferrer"
-                              href={`http://"${appRoot}/users/${row.UserId}`}
+                              href={`http://${appRoot}/users/${row.UserId}`}
                             >
                               {row.UserId}
                             </a>
