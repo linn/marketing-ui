@@ -8,13 +8,7 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
+import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 
 function App() {
   const appRoot =
@@ -26,16 +20,55 @@ function App() {
     `https://${appRoot}/users/promotions/lp12-50`
   );
 
-  const [country, setCountry] = React.useState("");
+  const [selectedList, setSelectedList] = React.useState(null);
 
   const handleChange = (event) => {
-    setCountry(event.target.value);
+    setSelectedList(data.find((d) => d.CountryCode === event.target.value));
   };
+
+  const columns = [
+    { field: "EmailAddress", headerName: "Email", width: 250 },
+    { field: "Tags", headerName: "Tags", width: 450 },
+    {
+      field: "DateRegistered",
+      headerName: "Date Registered",
+      width: 250,
+      valueGetter: (params) =>
+        new Date(params.row.DateRegistered).toDateString(),
+    },
+    {
+      field: "Time Registered",
+      headerName: "Time Registered",
+      width: 250,
+      valueGetter: (params) =>
+        new Date(params.row.DateRegistered).toLocaleTimeString(),
+    },
+    {
+      field: "UserId",
+      headerName: "User",
+      width: 250,
+      renderCell: (params) => (
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href={`http://${appRoot}/users/${params.row.UserId}`}
+        >
+          {params.row.UserId}
+        </a>
+      ),
+    },
+  ];
 
   return (
     <Grid container spacing={3} marginTop="30px" padding="60px">
-      <Grid item xs={12}>
+      <Grid item xs={11}>
         <Typography variant="h3">LP12-50 Interest Lists</Typography>
+      </Grid>
+      <Grid item xs={1}>
+        <img
+          src="https://app.linn.co.uk/Content/images/linn-logo.png"
+          alt="logo"
+        />
       </Grid>
 
       {loading && (
@@ -55,7 +88,7 @@ function App() {
               <Select
                 labelId="select-label"
                 id="simple-select"
-                value={country}
+                value={selectedList?.CountryCode}
                 label="Select A Country"
                 onChange={handleChange}
               >
@@ -67,47 +100,40 @@ function App() {
               </Select>
             </FormControl>
           </Grid>
-          {country && (
-            <Grid item xs={12}>
-              <TableContainer component={Paper}>
-                <Table aria-label="simple table">
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>Email</TableCell>
-                      <TableCell>User</TableCell>
-                      <TableCell>Date Registered</TableCell>
-                      <TableCell>Time Registered</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {data
-                      .find((d) => d.CountryCode === country)
-                      ?.List.map((row) => (
-                        <TableRow key={row.EmailAddress}>
-                          <TableCell component="th" scope="row">
-                            {row.EmailAddress}
-                          </TableCell>
-                          <TableCell component="th" scope="row">
-                            <a
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              href={`http://${appRoot}/users/${row.UserId}`}
-                            >
-                              {row.UserId}
-                            </a>
-                          </TableCell>
-                          <TableCell component="th" scope="row">
-                            {new Date(row.DateRegistered).toDateString()}
-                          </TableCell>
-                          <TableCell component="th" scope="row">
-                            {new Date(row.DateRegistered).toLocaleTimeString()}
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </Grid>
+          {selectedList && (
+            <>
+              <Grid item xs={12}>
+                <Typography variant="h4">Main List</Typography>
+              </Grid>
+              <Grid item xs={12}>
+                <DataGrid
+                  slots={{ toolbar: GridToolbar }}
+                  autoHeight
+                  rows={selectedList?.List.map((r) => ({
+                    ...r,
+                    id: r.UserId,
+                  })).slice(0, selectedList.Capacity)}
+                  columns={columns}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <Typography variant="h4">Reserve List</Typography>
+              </Grid>
+              <Grid item xs={12}>
+                <DataGrid
+                  autoHeight
+                  slots={{ toolbar: GridToolbar }}
+                  rows={selectedList?.List.map((r) => ({
+                    ...r,
+                    id: r.UserId,
+                  })).slice(
+                    selectedList.Capacity,
+                    selectedList.Capacity + selectedList.ReserveCapacity
+                  )}
+                  columns={columns}
+                />
+              </Grid>
+            </>
           )}
         </>
       )}
