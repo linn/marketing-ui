@@ -8,5 +8,4 @@ before_install:
 install: 
  - ./scripts/install.sh
 script: 
- - ./scripts/package.sh
  - travis_wait ./scripts/deploy.sh

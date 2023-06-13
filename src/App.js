@@ -110,7 +110,7 @@ function App() {
           {selectedList && (
             <>
               <Grid item xs={12}>
-                <Typography variant="h4">Main List</Typography>
+                <Typography variant="h4">Main List ({selectedList.Capacity})</Typography>
               </Grid>
               <Grid item xs={12}>
                 <DataGrid
@@ -125,7 +125,7 @@ function App() {
                 />
               </Grid>
               <Grid item xs={12}>
-                <Typography variant="h4">Reserve List</Typography>
+                <Typography variant="h4">Reserve List ({selectedList.ReserveCapacity})</Typography>
               </Grid>
               <Grid item xs={12}>
                 <DataGrid
