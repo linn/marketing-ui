@@ -12,13 +12,9 @@ import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 
 function App() {
   console.log(process.env);
-  const appRoot =
-    process.env.NODE_ENV === "production"
-      ? "app.linn.co.uk"
-      : "app-sys.linn.co.uk";
 
   const { data, loading } = useData(
-    `https://${appRoot}/users/promotions/lp12-50`
+    `https://${process.env.REACT_APP_ROOT}/users/promotions/lp12-50`
   );
 
   const [selectedList, setSelectedList] = React.useState(null);
@@ -52,7 +48,7 @@ function App() {
         <a
           target="_blank"
           rel="noopener noreferrer"
-          href={`http://${appRoot}/users/${params.row.UserId}`}
+          href={`http://${process.env.REACT_APP_ROOT}/users/${params.row.UserId}`}
         >
           {params.row.UserId}
         </a>
@@ -111,7 +107,9 @@ function App() {
           {selectedList && (
             <>
               <Grid item xs={12}>
-                <Typography variant="h4">Main List ({selectedList.Capacity})</Typography>
+                <Typography variant="h4">
+                  Main List ({selectedList.Capacity})
+                </Typography>
               </Grid>
               <Grid item xs={12}>
                 <DataGrid
@@ -126,7 +124,9 @@ function App() {
                 />
               </Grid>
               <Grid item xs={12}>
-                <Typography variant="h4">Reserve List ({selectedList.ReserveCapacity})</Typography>
+                <Typography variant="h4">
+                  Reserve List ({selectedList.ReserveCapacity})
+                </Typography>
               </Grid>
               <Grid item xs={12}>
                 <DataGrid
