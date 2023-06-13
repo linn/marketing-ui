@@ -11,6 +11,7 @@ import Select from "@mui/material/Select";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 
 function App() {
+  console.log(process.env);
   const appRoot =
     process.env.NODE_ENV === "production"
       ? "app.linn.co.uk"

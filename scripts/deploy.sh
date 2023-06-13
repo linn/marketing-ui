@@ -1,25 +1,19 @@
 set -ev
 
-docker login -u $DOCKER_HUB_USERNAME -p $DOCKER_HUB_PASSWORD
-
-if [ "${TRAVIS_BRANCH}" = "main" ]; then
-  if [ "${TRAVIS_PULL_REQUEST}" = "false" ]; then
-    docker build --no-cache -t linn/marketing-ui:$TRAVIS_BUILD_NUMBER --build-arg gitBranch=$GIT_BRANCH --build-arg publicUrl=https://app.linn.co.uk/marketing-ui .
-  else
-   docker build --no-cache -t linn/marketing-ui:$TRAVIS_BUILD_NUMBER --build-arg gitBranch=$GIT_BRANCH --build-arg publicUrl=https://app-sys.linn.co.uk/marketing-ui .
-  fi
-fi
-
-docker push linn/marketing-ui:$TRAVIS_BUILD_NUMBER
-
-# install aws cli
-curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-unzip awscliv2.zip
-sudo ./aws/install
-
 # deploy on aws
 if [ "${TRAVIS_BRANCH}" = "main" ]; then
+  docker login -u $DOCKER_HUB_USERNAME -p $DOCKER_HUB_PASSWORD
+
+
+  # install aws cli
+  curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+  unzip awscliv2.zip
+  sudo ./aws/install
   if [ "${TRAVIS_PULL_REQUEST}" = "false" ]; then
+    PUBLIC_URL=https://app.linn.co.uk/marketing-ui npm run build
+
+    docker build --no-cache -t linn/marketing-ui:$TRAVIS_BUILD_NUMBER --build-arg GIT_BRANCH=$GIT_BRANCH --build-arg PUBLIC_URL=https://app.linn.co.uk/marketing-ui .
+    docker push linn/marketing-ui:$TRAVIS_BUILD_NUMBER
     # master - deploy to production
     echo deploy to production
 
@@ -34,6 +28,10 @@ if [ "${TRAVIS_BRANCH}" = "main" ]; then
   else
     # pull request based on master - deploy to sys
     echo deploy to sys
+    PUBLIC_URL=https://app-sys.linn.co.uk/marketing-ui npm run build
+
+    docker build --no-cache -t linn/marketing-ui:$TRAVIS_BUILD_NUMBER --build-arg GIT_BRANCH=$GIT_BRANCH --build-arg PUBLIC_URL=https://app-sys.linn.co.uk/marketing-ui .
+    docker push linn/marketing-ui:$TRAVIS_BUILD_NUMBER
 
     # aws s3 cp s3://$S3_BUCKET_NAME/finance/sys.env ./secrets.env
 

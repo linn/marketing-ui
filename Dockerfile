@@ -8,6 +8,9 @@ RUN npm install
 
 COPY . .
 ENV GIT_BRANCH $gitBranch
-ENV PUBLIC_URL $publicUrl
+
+ARG PUBLIC_URL
+ENV PUBLIC_URL=$PUBLIC_URL
+
 EXPOSE 5050
 CMD [ "node", "server.js" ]
