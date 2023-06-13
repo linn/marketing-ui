@@ -29,6 +29,11 @@ Resources:
   marketingUiRole:
     Type: AWS::IAM::Role
     Properties:
+      Tags:
+        - Key: "Project"
+          Value: "marketing-ui"
+        - Key: "CIT"
+          Value: "IT"
       AssumeRolePolicyDocument:
         Version: "2012-10-17"
         Statement:
@@ -72,6 +77,11 @@ Resources:
   marketingUiTaskDefinition:
     Type: AWS::ECS::TaskDefinition
     Properties:
+      Tags:
+        - Key: "Project"
+          Value: "marketing-ui"
+        - Key: "CIT"
+          Value: "IT"
       TaskRoleArn: !GetAtt marketingUiRole.Arn
       ContainerDefinitions:
       - Name: marketing-ui
@@ -102,6 +112,11 @@ Resources:
   marketingUiService:
     Type: AWS::ECS::Service
     Properties:
+      Tags:
+        - Key: "Project"
+          Value: "marketing-ui"
+        - Key: "CIT"
+          Value: "IT"
       # Have to use long form conditional
       Cluster: !If
         - isTesting
