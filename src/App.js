@@ -66,6 +66,20 @@ function App() {
     },
   ];
 
+  const getNumberOnList = () => {
+    if (selectedList.List.length <= selectedList.Capacity) {
+      return selectedList.List.length;
+    }
+    return selectedList.Capacity;
+  };
+
+  const getNumberOnReserveList = () => {
+    if (selectedList.List.length <= selectedList.Capacity) {
+      return 0;
+    }
+    return selectedList.List.length - selectedList.Capacity;
+  };
+
   return (
     <Grid container spacing={3} marginTop="30px" padding="60px">
       <Grid item xs={11}>
@@ -110,7 +124,9 @@ function App() {
           {selectedList && (
             <>
               <Grid item xs={12}>
-                <Typography variant="h4">Main List ({selectedList.Capacity})</Typography>
+                <Typography variant="h4">
+                  Main List ({getNumberOnList()}/{selectedList.Capacity})
+                </Typography>
               </Grid>
               <Grid item xs={12}>
                 <DataGrid
@@ -125,7 +141,10 @@ function App() {
                 />
               </Grid>
               <Grid item xs={12}>
-                <Typography variant="h4">Reserve List ({selectedList.ReserveCapacity})</Typography>
+                <Typography variant="h4">
+                  Reserve List ({getNumberOnReserveList()}/
+                  {selectedList.ReserveCapacity})
+                </Typography>
               </Grid>
               <Grid item xs={12}>
                 <DataGrid
