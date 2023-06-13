@@ -11,6 +11,7 @@ import Select from "@mui/material/Select";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 
 function App() {
+  console.log(process.env);
   const appRoot =
     process.env.NODE_ENV === "production"
       ? "app.linn.co.uk"
@@ -62,9 +63,8 @@ function App() {
       field: "CountryCode",
       headerName: "Country",
       width: 100,
-      valueGetter: (params) =>
-        selectedList?.CountryCode,
-    }
+      valueGetter: (params) => selectedList?.CountryCode,
+    },
   ];
 
   return (
@@ -111,7 +111,7 @@ function App() {
           {selectedList && (
             <>
               <Grid item xs={12}>
-                <Typography variant="h4">Main List</Typography>
+                <Typography variant="h4">Main List ({selectedList.Capacity})</Typography>
               </Grid>
               <Grid item xs={12}>
                 <DataGrid
@@ -122,10 +122,11 @@ function App() {
                     id: r.UserId,
                   })).slice(0, selectedList.Capacity)}
                   columns={columns}
+                  hideFooter
                 />
               </Grid>
               <Grid item xs={12}>
-                <Typography variant="h4">Reserve List</Typography>
+                <Typography variant="h4">Reserve List ({selectedList.ReserveCapacity})</Typography>
               </Grid>
               <Grid item xs={12}>
                 <DataGrid
@@ -139,6 +140,7 @@ function App() {
                     selectedList.Capacity + selectedList.ReserveCapacity
                   )}
                   columns={columns}
+                  hideFooter
                 />
               </Grid>
             </>
