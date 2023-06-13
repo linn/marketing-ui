@@ -10,7 +10,8 @@ if [ "${TRAVIS_BRANCH}" = "main" ]; then
   unzip awscliv2.zip
   sudo ./aws/install
   if [ "${TRAVIS_PULL_REQUEST}" = "false" ]; then
-      
+    PUBLIC_URL=https://app.linn.co.uk/marketing-ui npm run build
+
     docker build --no-cache -t linn/marketing-ui:$TRAVIS_BUILD_NUMBER --build-arg GIT_BRANCH=$GIT_BRANCH --build-arg PUBLIC_URL=https://app.linn.co.uk/marketing-ui .
     docker push linn/marketing-ui:$TRAVIS_BUILD_NUMBER
     # master - deploy to production
@@ -27,6 +28,8 @@ if [ "${TRAVIS_BRANCH}" = "main" ]; then
   else
     # pull request based on master - deploy to sys
     echo deploy to sys
+    PUBLIC_URL=https://app.linn.co.uk/marketing-ui npm run build
+
     docker build --no-cache -t linn/marketing-ui:$TRAVIS_BUILD_NUMBER --build-arg GIT_BRANCH=$GIT_BRANCH --build-arg PUBLIC_URL=https://app-sys.linn.co.uk/marketing-ui .
     docker push linn/marketing-ui:$TRAVIS_BUILD_NUMBER
 

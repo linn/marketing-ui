@@ -7,7 +7,8 @@ COPY package*.json ./
 RUN npm install
 
 COPY . .
-ARG GIT_BRANCH
+ENV GIT_BRANCH $gitBranch
+
 ARG PUBLIC_URL
 ENV PUBLIC_URL=$PUBLIC_URL
 

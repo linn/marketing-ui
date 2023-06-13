@@ -1,6 +1,9 @@
 const express = require('express');
 const path = require('path');
 const app = express();
+
+console.log(process.env);
+
 app.use('/marketing-ui', express.static(__dirname + '/marketing-ui'))
 app.get('/marketing-ui', function (_, res) {
   console.log(__dirname);
