@@ -57,6 +57,14 @@ function App() {
         </a>
       ),
     },
+    { field: "PostCode", headerName: "Post Code", width: 150 },
+    {
+      field: "CountryCode",
+      headerName: "Country",
+      width: 100,
+      valueGetter: (params) =>
+        selectedList?.CountryCode,
+    }
   ];
 
   return (
