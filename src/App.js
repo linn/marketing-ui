@@ -62,9 +62,8 @@ function App() {
       field: "CountryCode",
       headerName: "Country",
       width: 100,
-      valueGetter: (params) =>
-        selectedList?.CountryCode,
-    }
+      valueGetter: (params) => selectedList?.CountryCode,
+    },
   ];
 
   return (
@@ -122,6 +121,7 @@ function App() {
                     id: r.UserId,
                   })).slice(0, selectedList.Capacity)}
                   columns={columns}
+                  hideFooter
                 />
               </Grid>
               <Grid item xs={12}>
@@ -139,6 +139,7 @@ function App() {
                     selectedList.Capacity + selectedList.ReserveCapacity
                   )}
                   columns={columns}
+                  hideFooter
                 />
               </Grid>
             </>
