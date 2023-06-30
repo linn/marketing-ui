@@ -58,8 +58,8 @@ function App() {
         </a>
       ),
     },
-    { field: "FullName", headerName: "Email", width: 250 },
-    { field: "PhoneNumber", headerName: "Email", width: 250 },
+    { field: "FullName", headerName: "Name", width: 250 },
+    { field: "PhoneNumber", headerName: "Phone", width: 250 },
     { field: "PostCode", headerName: "Post Code", width: 150 },
     {
       field: "CountryCode",
@@ -67,6 +67,8 @@ function App() {
       width: 100,
       valueGetter: (params) => selectedList?.CountryCode,
     },
+    { field: "SubscribedToMailingList", headerName: "Mailing List?", width: 150 },
+
   ];
 
   const getNumberOnList = () => {
