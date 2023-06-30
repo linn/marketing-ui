@@ -121,7 +121,7 @@ function App() {
                 {data.map((d) => (
                   <MenuItem key={d.CountryCode} value={d.CountryCode}>
                     {countries.find((x) => x.countryCode === d.CountryCode)
-                      ?.name || d.countryCode}
+                      ?.name || d.CountryCode}
                   </MenuItem>
                 ))}
               </Select>
