@@ -13,8 +13,12 @@ import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 function App() {
   console.log(process.env);
 
-  const { data, loading } = useData(
+  const [data, loading] = useData(
     `https://${process.env.REACT_APP_ROOT}/users/promotions/lp12-50`
+  );
+
+  const [countries, countriesLoading] = useData(
+    `https://${process.env.REACT_APP_ROOT}/logistics/countries`
   );
 
   const [selectedList, setSelectedList] = React.useState(null);
@@ -54,6 +58,8 @@ function App() {
         </a>
       ),
     },
+    { field: "FullName", headerName: "Email", width: 250 },
+    { field: "PhoneNumber", headerName: "Email", width: 250 },
     { field: "PostCode", headerName: "Post Code", width: 150 },
     {
       field: "CountryCode",
@@ -89,7 +95,7 @@ function App() {
         />
       </Grid>
 
-      {loading && (
+      {(loading || countriesLoading) && (
         <>
           <Grid item xs={5} />
           <Grid item xs={2}>
@@ -98,7 +104,7 @@ function App() {
           <Grid item xs={5} />
         </>
       )}
-      {data && (
+      {data && countries && (
         <>
           <Grid item xs={3}>
             <FormControl fullWidth>
@@ -112,7 +118,8 @@ function App() {
               >
                 {data.map((d) => (
                   <MenuItem key={d.CountryCode} value={d.CountryCode}>
-                    {d.CountryCode}
+                    {countries.find((x) => x.countryCode === d.CountryCode)
+                      ?.name || d.countryCode}
                   </MenuItem>
                 ))}
               </Select>
