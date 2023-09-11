@@ -130,9 +130,3 @@ Resources:
           Type: spread
       TaskDefinition: !Ref marketingUiTaskDefinition
       Role: ecsServiceRole
-      LoadBalancers:
-      - ContainerName: marketing-ui
-        ContainerPort: 5050
-        TargetGroupArn:
-          Fn::ImportValue:
-            !Sub "marketing-ui-target-group-arn${environmentSuffix}"
