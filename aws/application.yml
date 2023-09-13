@@ -91,6 +91,15 @@ Resources:
         PortMappings:
         - ContainerPort: 5050
         Memory: '150'
+        HealthCheck:
+          Command:
+            - "CMD-SHELL"
+            - "curl -f http://localhost:5050/healthcheck || exit 1"
+        DockerLabels:
+          traefik.enable: true
+          traefik.http.routers.sales.entrypoints: web
+          traefik.http.routers.sales.rule: "PathPrefix(`/marketing-ui`)"
+          traefik.http.services.sales.loadbalancer.healthcheck.path: "/healthcheck"
         LogConfiguration:
           LogDriver: gelf
           Options:
@@ -129,4 +138,3 @@ Resources:
         - Field: instanceId
           Type: spread
       TaskDefinition: !Ref marketingUiTaskDefinition
-      Role: ecsServiceRole
